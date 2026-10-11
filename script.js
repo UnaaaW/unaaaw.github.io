@@ -32,3 +32,20 @@ pronunciationButton.addEventListener('click', async () => {
 pronunciationAudio.addEventListener('ended', () => {
   pronunciationButton.classList.remove('is-playing');
 });
+
+// The GIF plays once on arrival. Reload its source to replay on hover.
+const homeIcon = document.querySelector('.header-icon');
+const homeImage = homeIcon.querySelector('img');
+const homeAnimation = homeImage.getAttribute('src');
+const homeStill = homeIcon.querySelector('source').getAttribute('srcset');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let homeAnimationTimer;
+function playHomeAnimation() {
+  if (reducedMotion.matches) return;
+  clearTimeout(homeAnimationTimer);
+  homeImage.src = `${homeAnimation}?replay=${Date.now()}`;
+  homeAnimationTimer = setTimeout(() => { homeImage.src = homeStill; }, 3050);
+}
+homeIcon.addEventListener('mouseenter', playHomeAnimation);
+homeIcon.addEventListener('focus', playHomeAnimation);
+playHomeAnimation();
